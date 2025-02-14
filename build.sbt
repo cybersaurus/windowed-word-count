@@ -9,6 +9,8 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-effect" % "3.5.7",
   "co.fs2" %% "fs2-core" % "3.11.0",
   "co.fs2" %% "fs2-io" % "3.11.0",
+  "io.circe" %% "circe-generic" % "0.14.10",
+  "io.circe" %% "circe-parser" % "0.14.10",
   "com.disneystreaming" %% "weaver-cats" % "0.8.4" % Test
 )
 

@@ -1,5 +1,9 @@
 # Windowed Word Count
 
+### Running the tests
+```shell
+sbt clean compile test
+```
 
 ### Start the Event Publisher and Event Listener
 

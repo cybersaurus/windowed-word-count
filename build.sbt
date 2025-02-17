@@ -17,3 +17,5 @@ libraryDependencies ++= Seq(
 testFrameworks += new TestFramework("weaver.framework.CatsEffect")
 
 Compile / run / fork := true
+
+assemblyJarName := "event-listener.jar"

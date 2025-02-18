@@ -26,7 +26,7 @@ class EventListener(inputStream: InputStream, eventStore: ExpiringEventStore) {
       .through(dropParsingFailures)
       .through(toEvent)
       .through(dropDecodingFailures)
-      .evalTap(IO.println)
+//      .evalTap(IO.println)
       .evalMap(event => eventStore.append(event))
       .onFinalize(IO.println("") >> IO.println("Shutting down EventListener..."))
       .compile

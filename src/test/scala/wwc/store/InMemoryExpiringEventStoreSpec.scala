@@ -10,8 +10,8 @@ import java.time.temporal.ChronoUnit
 import java.time.Instant
 import scala.concurrent.duration.*
 
-object InMemoryExpiringEventStoreSpec extends weaver.SimpleIOSuite {
-  private val initialInstant: Instant = Instant.now().truncatedTo(ChronoUnit.SECONDS).minus(2, ChronoUnit.HOURS)
+object InMemoryExpiringEventStoreSpec extends weaver.SimpleIOSuite with wwc.time.TimeFixtures {
+  private val initialInstant: Instant = now.minus(2, ChronoUnit.HOURS)
 
   private val initialEvents: List[Event] = List.tabulate(5) { n =>
     Event("event_type", s"data $n", initialInstant.plus(n, ChronoUnit.HOURS))

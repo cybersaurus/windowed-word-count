@@ -7,12 +7,9 @@ import wwc.store.InMemoryExpiringEventStore
 
 import java.io.ByteArrayInputStream
 import java.io.InputStream
-import java.time.temporal.ChronoUnit
-import java.time.Instant
 import scala.concurrent.duration.*
 
-object EventListenerSpec extends weaver.SimpleIOSuite {
-  private val now = Instant.now().truncatedTo(ChronoUnit.MILLIS)
+object EventListenerSpec extends weaver.SimpleIOSuite with wwc.time.TimeFixtures {
 
   test("EventListener consumes valid json events") {
 

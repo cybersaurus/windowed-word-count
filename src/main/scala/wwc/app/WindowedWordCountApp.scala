@@ -15,7 +15,7 @@ class WindowedWordCountApp extends cats.effect.IOApp.Simple {
   override final val run: IO[Unit] =
     Ref
       .of[IO, List[Event]](List.empty)
-      .map(eventsRef => InMemoryExpiringEventStore(expirationWindow = 1.minutes, eventsRef))
+      .map(eventsRef => InMemoryExpiringEventStore(expirationWindow = 5.minutes, eventsRef))
       .flatMap { eventStore =>
         IO.both(
           IO.both(

@@ -22,7 +22,7 @@ object EventService {
 
   def routes(eventStore: wwc.store.ExpiringEventStore): HttpRoutes[IO] =
     HttpRoutes
-      .of[IO] { case GET -> Root / "wordcounts" =>
+      .of[IO] { case GET -> Root / "wordcount" =>
         eventStore
           .getAllUnexpired()
           .map(wordCountsByEventType)

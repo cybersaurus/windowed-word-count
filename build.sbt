@@ -1,26 +1,27 @@
-import Versions.*
+import Dependencies.*
 
-name := "windowed-word-count"
+ThisBuild / name := "windowed-word-count"
 
-version := "0.0.1"
+ThisBuild / version := "0.0.1"
 
-scalaVersion := "3.6.3"
+ThisBuild / scalaVersion := "3.6.3"
 
-libraryDependencies ++= Seq(
-  "org.typelevel" %% "cats-core" % catsCore,
-  "org.typelevel" %% "cats-effect" % catsEffect,
-  "co.fs2" %% "fs2-core" % fs2,
-  "co.fs2" %% "fs2-io" % fs2,
-  "io.circe" %% "circe-core" % circe,
-  "io.circe" %% "circe-parser" % circe,
-  "org.http4s" %% "http4s-circe" % http4s,
-  "org.http4s" %% "http4s-dsl" % http4s,
-  "org.http4s" %% "http4s-ember-server" % http4s,
-  "com.disneystreaming" %% "weaver-cats" % weaver % Test
-)
+lazy val root = project
+  .in(file("."))
+  .settings(
+    Compile / run / fork := true,
+    libraryDependencies ++= catsCore ++ catsEffect ++ fs2 ++ circe ++ http4s ++ weaver.map(_ % Test),
+    testFrameworks += new TestFramework("weaver.framework.CatsEffect")
+  )
 
-testFrameworks += new TestFramework("weaver.framework.CatsEffect")
+lazy val integration = project
+  .in(file("integration"))
+  .dependsOn(root % "test->compile")
+  .settings(
+    Test / fork := true,
+    libraryDependencies ++= catsCore ++ catsEffect ++ fs2 ++ circe ++ http4s ++
+      (http4sClient ++ weaver).map(_ % Test),
+    testFrameworks += new TestFramework("weaver.framework.CatsEffect")
+  )
 
-Compile / run / fork := true
-
-assemblyJarName := "event-listener.jar"
+ThisBuild / assemblyJarName := "event-listener.jar"

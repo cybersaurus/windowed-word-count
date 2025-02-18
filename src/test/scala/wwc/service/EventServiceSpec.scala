@@ -21,7 +21,7 @@ object EventServiceSpec extends weaver.SimpleIOSuite with wwc.time.TimeFixtures 
   private given Decoder[EventService.WordCountsByEventType] =
     Decoder.forProduct1("wordCountsByEventType")(EventService.WordCountsByEventType.apply)
 
-  private val request: Request[IO] = Request(uri = uri"/wordcounts")
+  private val request: Request[IO] = Request(uri = uri"/wordcount")
 
   test("return empty map of WordCounts when zero Events have been received") {
     val service: Kleisli[IO, Request[IO], Response[IO]] = EventService.routes(StubbedEventStore(List.empty)).orNotFound

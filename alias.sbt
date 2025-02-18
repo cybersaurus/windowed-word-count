@@ -1,4 +1,4 @@
 addCommandAlias(
   name = "validate",
-  value = "scalafmtCheckAll; clean; compile; test"
+  value = "scalafmtCheckAll; clean; compile; test; integration/test"
 )

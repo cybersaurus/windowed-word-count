@@ -2,15 +2,19 @@ package wwc.service
 
 import cats.effect.IO
 import io.circe.Encoder
+import io.circe.KeyEncoder
 import org.http4s.circe.CirceEntityEncoder.circeEntityEncoder
 import org.http4s.dsl.io.*
 import org.http4s.HttpRoutes
 import wwc.model.Event
+import wwc.model.EventType
 
 import scala.util.chaining.*
 
 object EventService {
-  case class WordCountsByEventType(wordCountsByEventType: Map[String, Set[WordCount]])
+  private given KeyEncoder[EventType] = KeyEncoder.instance(_.toString)
+
+  case class WordCountsByEventType(wordCountsByEventType: Map[EventType, Set[WordCount]])
   object WordCountsByEventType {
     given Encoder[WordCountsByEventType] = Encoder.forProduct1("wordCountsByEventType")(_.wordCountsByEventType)
   }

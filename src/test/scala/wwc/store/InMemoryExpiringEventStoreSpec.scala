@@ -5,6 +5,7 @@ import cats.effect.Ref
 import cats.instances.list.*
 import cats.syntax.traverse.*
 import wwc.model.Event
+import wwc.model.EventType
 
 import java.time.temporal.ChronoUnit
 import java.time.Instant
@@ -14,7 +15,7 @@ object InMemoryExpiringEventStoreSpec extends weaver.SimpleIOSuite with wwc.time
   private val initialInstant: Instant = now.minus(2, ChronoUnit.HOURS)
 
   private val initialEvents: List[Event] = List.tabulate(5) { n =>
-    Event("event_type", s"data $n", initialInstant.plus(n, ChronoUnit.HOURS))
+    Event(EventType("event_type"), s"data $n", initialInstant.plus(n, ChronoUnit.HOURS))
   }
 
   test("append() adds all Events to the EventStore") {

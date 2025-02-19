@@ -3,6 +3,7 @@ package wwc.service
 import cats.effect.IO
 import cats.effect.Ref
 import wwc.model.Event
+import wwc.model.EventType
 import wwc.store.InMemoryExpiringEventStore
 
 import java.io.ByteArrayInputStream
@@ -26,10 +27,10 @@ object EventListenerSpec extends weaver.SimpleIOSuite with wwc.time.TimeFixtures
     val testInstance = EventListener(inputStream, eventStore)
 
     val expectedEvents = List(
-      Event("baz", "first", now.minusSeconds(3)),
-      Event("baz", "second", now.minusSeconds(2)),
-      Event("baz", "third", now.minusSeconds(1)),
-      Event("baz", "fourth", now)
+      Event(EventType("baz"), "first", now.minusSeconds(3)),
+      Event(EventType("baz"), "second", now.minusSeconds(2)),
+      Event(EventType("baz"), "third", now.minusSeconds(1)),
+      Event(EventType("baz"), "fourth", now)
     )
 
     for {
@@ -55,9 +56,9 @@ object EventListenerSpec extends weaver.SimpleIOSuite with wwc.time.TimeFixtures
     val testInstance = EventListener(inputStream, eventStore)
 
     val expectedEvents = List(
-      Event("baz", "first", now.minusSeconds(2)),
-      Event("baz", "second", now.minusSeconds(1)),
-      Event("baz", "third", now)
+      Event(EventType("baz"), "first", now.minusSeconds(2)),
+      Event(EventType("baz"), "second", now.minusSeconds(1)),
+      Event(EventType("baz"), "third", now)
     )
 
     for {

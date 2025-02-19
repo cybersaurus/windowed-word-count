@@ -2,23 +2,18 @@ package wwc
 
 import cats.effect.IO
 import cats.effect.Resource
-import io.circe.Decoder
 import org.http4s.circe.CirceEntityDecoder.circeEntityDecoder
 import org.http4s.client.*
 import org.http4s.ember.client.EmberClientBuilder
 import org.http4s.syntax.literals.*
 import wwc.app.WindowedWordCount
+import wwc.model.EventType
 import wwc.service.EventService
 import wwc.service.EventService.WordCount
 
 import java.io.InputStream
 
-object WindowedWordCountAppTest extends weaver.IOSuite {
-
-  private given Decoder[EventService.WordCount] = Decoder.forProduct2("word", "count")(WordCount.apply)
-
-  private given Decoder[EventService.WordCountsByEventType] =
-    Decoder.forProduct1("wordCountsByEventType")(EventService.WordCountsByEventType.apply)
+object WindowedWordCountAppTest extends weaver.IOSuite with wwc.json.DecoderFixtures {
 
   case class SharedResources(client: Client[IO])
   override type Res = SharedResources
@@ -51,16 +46,16 @@ object WindowedWordCountAppTest extends weaver.IOSuite {
 
     val expectedResponse = EventService.WordCountsByEventType(
       Map(
-        "eventType1" -> Set(
+        EventType("eventType1") -> Set(
           WordCount("one", 1),
           WordCount("two", 2),
           WordCount("three", 3)
         ),
-        "eventType2" -> Set(
+        EventType("eventType2") -> Set(
           WordCount("two", 2),
           WordCount("four", 4)
         ),
-        "eventTypeWithNoWords" -> Set.empty
+        EventType("eventTypeWithNoWords") -> Set.empty
       )
     )
 

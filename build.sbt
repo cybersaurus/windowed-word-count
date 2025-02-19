@@ -18,7 +18,7 @@ lazy val root = project
 
 lazy val integration = project
   .in(file("integration"))
-  .dependsOn(root % "test->compile")
+  .dependsOn(root % "test->test")
   .settings(
     Test / fork := true,
     libraryDependencies ++= catsCore ++ catsEffect ++ fs2 ++ circe ++ http4s ++

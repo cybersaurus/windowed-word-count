@@ -2,7 +2,6 @@ package wwc.service
 
 import cats.data.Kleisli
 import cats.effect.IO
-import io.circe.Decoder
 import org.http4s.*
 import org.http4s.circe.*
 import org.http4s.circe.CirceEntityDecoder.circeEntityDecoder
@@ -10,16 +9,13 @@ import org.http4s.implicits.*
 import org.http4s.Request
 import org.http4s.Response
 import wwc.model.Event
+import wwc.model.EventType
 import wwc.service.EventService.WordCount
 import wwc.store.ExpiringEventStore
 
 import scala.concurrent.duration.*
 
-object EventServiceSpec extends weaver.SimpleIOSuite with wwc.time.TimeFixtures {
-
-  private given Decoder[EventService.WordCount] = Decoder.forProduct2("word", "count")(WordCount.apply)
-  private given Decoder[EventService.WordCountsByEventType] =
-    Decoder.forProduct1("wordCountsByEventType")(EventService.WordCountsByEventType.apply)
+object EventServiceSpec extends weaver.SimpleIOSuite with wwc.time.TimeFixtures with wwc.json.DecoderFixtures {
 
   private val request: Request[IO] = Request(uri = uri"/wordcount")
 
@@ -36,26 +32,26 @@ object EventServiceSpec extends weaver.SimpleIOSuite with wwc.time.TimeFixtures 
 
   test("return map of WordCounts for the given Events") {
     val events = List(
-      Event("eventType1", "one two three", now),
-      Event("eventType2", "four four two", now),
-      Event("eventType1", "two three", now.plusSeconds(1)),
-      Event("eventType2", "four", now.plusSeconds(1)),
-      Event("eventType1", "three", now.plusSeconds(2)),
-      Event("eventType2", "four two", now.plusSeconds(2)),
-      Event("eventTypeWithNoWords", "", now.plusSeconds(3))
+      Event(EventType("eventType1"), "one two three", now),
+      Event(EventType("eventType2"), "four four two", now),
+      Event(EventType("eventType1"), "two three", now.plusSeconds(1)),
+      Event(EventType("eventType2"), "four", now.plusSeconds(1)),
+      Event(EventType("eventType1"), "three", now.plusSeconds(2)),
+      Event(EventType("eventType2"), "four two", now.plusSeconds(2)),
+      Event(EventType("eventTypeWithNoWords"), "", now.plusSeconds(3))
     )
     val expectedWordCounts = EventService.WordCountsByEventType(
       Map(
-        "eventType1" -> Set(
+        EventType("eventType1") -> Set(
           WordCount("one", 1),
           WordCount("two", 2),
           WordCount("three", 3)
         ),
-        "eventType2" -> Set(
+        EventType("eventType2") -> Set(
           WordCount("two", 2),
           WordCount("four", 4)
         ),
-        "eventTypeWithNoWords" -> Set.empty
+        EventType("eventTypeWithNoWords") -> Set.empty
       )
     )
     val service: Kleisli[IO, Request[IO], Response[IO]] = EventService.routes(StubbedEventStore(events)).orNotFound
@@ -68,27 +64,27 @@ object EventServiceSpec extends weaver.SimpleIOSuite with wwc.time.TimeFixtures 
 
   pureTest("wordCountsByEventType") {
     val events = List(
-      Event("eventType1", "one two three", now),
-      Event("eventType2", "four four two", now),
-      Event("eventType1", "two three", now.plusSeconds(1)),
-      Event("eventType2", "four", now.plusSeconds(1)),
-      Event("eventType1", "three", now.plusSeconds(2)),
-      Event("eventType2", "four two", now.plusSeconds(2)),
-      Event("eventTypeWithNoWords", "", now.plusSeconds(3))
+      Event(EventType("eventType1"), "one two three", now),
+      Event(EventType("eventType2"), "four four two", now),
+      Event(EventType("eventType1"), "two three", now.plusSeconds(1)),
+      Event(EventType("eventType2"), "four", now.plusSeconds(1)),
+      Event(EventType("eventType1"), "three", now.plusSeconds(2)),
+      Event(EventType("eventType2"), "four two", now.plusSeconds(2)),
+      Event(EventType("eventTypeWithNoWords"), "", now.plusSeconds(3))
     )
 
     val expectedWordCounts = EventService.WordCountsByEventType(
       Map(
-        "eventType1" -> Set(
+        EventType("eventType1") -> Set(
           WordCount("one", 1),
           WordCount("two", 2),
           WordCount("three", 3)
         ),
-        "eventType2" -> Set(
+        EventType("eventType2") -> Set(
           WordCount("two", 2),
           WordCount("four", 4)
         ),
-        "eventTypeWithNoWords" -> Set.empty
+        EventType("eventTypeWithNoWords") -> Set.empty
       )
     )
 

@@ -11,6 +11,9 @@ import wwc.store.ExpiringEventStore
 
 import java.io.InputStream
 
+/** Stream data from a given InputStream, unmarshall each line to an Event and add to the EventStore. Invalid incoming
+  * events are silently ignored.
+  */
 class EventListener(inputStream: InputStream, eventStore: ExpiringEventStore) {
   private val toJson: Pipe[IO, String, Either[ParsingFailure, Json]] = _.map(parse)
   private val dropParsingFailures: Pipe[IO, Either[ParsingFailure, Json], Json] = _.collect { case Right(json) => json }
@@ -27,8 +30,7 @@ class EventListener(inputStream: InputStream, eventStore: ExpiringEventStore) {
       .through(toEvent)
       .through(dropDecodingFailures)
       .evalTap(IO.println)
-      .evalMap(event => eventStore.append(event))
-      .onFinalize(IO.println("") >> IO.println("Shutting down EventListener..."))
+      .evalMap(eventStore.append)
       .compile
       .drain
 }

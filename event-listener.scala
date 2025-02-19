@@ -1,6 +1,8 @@
 //> using scala "3.6.3"
 //> using jvm 21
 
+//> using mainClass wwc.app.WindowedWordCountApp
+
 //> using dep "org.typelevel::cats-effect::3.5.7"
 //> using dep "co.fs2::fs2-io::3.11.0"
 //> using dep "io.circe::circe-parser::0.14.10"
@@ -14,5 +16,3 @@
 //> using file src/main/scala/wwc/service/EventService.scala
 //> using file src/main/scala/wwc/store/ExpiringEventStore.scala
 //> using file src/main/scala/wwc/store/InMemoryExpiringEventStore.scala
-
-object EventListenerAppWrapper extends wwc.app.WindowedWordCountApp

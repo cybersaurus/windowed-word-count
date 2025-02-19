@@ -12,11 +12,10 @@ import wwc.store.InMemoryExpiringEventStore
 
 import scala.concurrent.duration.*
 
-abstract class WindowedWordCountApp extends cats.effect.IOApp.Simple {
+object WindowedWordCountApp extends cats.effect.IOApp.Simple {
 
   override final val run: IO[Unit] = WindowedWordCount.resource.useForever
 }
-object WindowedWordCountApp extends WindowedWordCountApp
 
 object WindowedWordCount {
   private val WINDOW: FiniteDuration = 2.minutes

@@ -11,7 +11,9 @@ lazy val root = project
   .settings(
     Compile / run / fork := true,
     libraryDependencies ++= catsCore ++ catsEffect ++ fs2 ++ circe ++ http4s ++ weaver.map(_ % Test),
-    testFrameworks += new TestFramework("weaver.framework.CatsEffect")
+    testFrameworks += new TestFramework("weaver.framework.CatsEffect"),
+    assembly / assemblyJarName := "event-listener.jar",
+    assembly / mainClass := Some("wwc.app.WindowedWordCountApp")
   )
 
 lazy val integration = project
@@ -23,5 +25,3 @@ lazy val integration = project
       (http4sClient ++ weaver).map(_ % Test),
     testFrameworks += new TestFramework("weaver.framework.CatsEffect")
   )
-
-ThisBuild / assemblyJarName := "event-listener.jar"
